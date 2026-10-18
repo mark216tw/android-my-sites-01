@@ -21,7 +21,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -84,82 +83,86 @@ fun SiteWebScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(
-                WindowInsets.safeDrawing.only(
-                    WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
-                ),
-            ),
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface,
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .padding(horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .fillMaxSize()
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
+                    ),
+                ),
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .padding(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                    )
+                }
+                Text(
+                    text = site.name,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            if (progress in 1..99) {
+                LinearProgressIndicator(
+                    progress = { progress / 100f },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
-            Text(
-                text = site.name,
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-        }
 
-        if (progress in 1..99) {
-            LinearProgressIndicator(
-                progress = { progress / 100f },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)),
-        ) {
-            AndroidView(
-                factory = { ctx ->
-                    createWebView(
-                        context = ctx,
-                        url = site.url,
-                        onProgress = { newProgress ->
-                            progress = newProgress
-                            if (newProgress == 0) {
-                                errorMessage = null
-                            }
-                        },
-                        onError = { errorMessage = it },
-                        onCreated = { webView = it },
-                    )
-                },
-                modifier = Modifier.fillMaxSize(),
-                onRelease = { view ->
-                    view.stopLoading()
-                    view.destroy()
-                },
-            )
-
-            errorMessage?.let { message ->
-                ErrorOverlay(
-                    detail = message,
-                    onRetry = {
-                        errorMessage = null
-                        webView?.reload()
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)),
+            ) {
+                AndroidView(
+                    factory = { ctx ->
+                        createWebView(
+                            context = ctx,
+                            url = site.url,
+                            onProgress = { newProgress ->
+                                progress = newProgress
+                                if (newProgress == 0) {
+                                    errorMessage = null
+                                }
+                            },
+                            onError = { errorMessage = it },
+                            onCreated = { webView = it },
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                    onRelease = { view ->
+                        view.stopLoading()
+                        view.destroy()
                     },
                 )
+
+                errorMessage?.let { message ->
+                    ErrorOverlay(
+                        detail = message,
+                        onRetry = {
+                            errorMessage = null
+                            webView?.reload()
+                        },
+                    )
+                }
             }
         }
     }
