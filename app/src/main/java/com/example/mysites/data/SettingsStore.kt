@@ -31,18 +31,27 @@ class SettingsStore(context: Context) {
         prefs.edit { putInt(KEY_THEME_HUE, _settings.value.themeHue) }
     }
 
+    fun setWebTextZoom(zoom: Int) {
+        val safeZoom = zoom.coerceIn(MIN_WEB_TEXT_ZOOM, MAX_WEB_TEXT_ZOOM)
+        _settings.update { it.copy(webTextZoom = safeZoom) }
+        prefs.edit { putInt(KEY_WEB_TEXT_ZOOM, safeZoom) }
+    }
+
     private fun readSettings(): AppSettings {
         val storedMode = prefs.getString(KEY_THEME_MODE, null)
         val mode = storedMode
             ?.let { name -> ThemeMode.entries.firstOrNull { it.name == name } }
             ?: ThemeMode.SYSTEM
         val hue = prefs.getInt(KEY_THEME_HUE, DEFAULT_THEME_HUE).coerceIn(0, 360)
-        return AppSettings(themeMode = mode, themeHue = hue)
+        val zoom = prefs.getInt(KEY_WEB_TEXT_ZOOM, DEFAULT_WEB_TEXT_ZOOM)
+            .coerceIn(MIN_WEB_TEXT_ZOOM, MAX_WEB_TEXT_ZOOM)
+        return AppSettings(themeMode = mode, themeHue = hue, webTextZoom = zoom)
     }
 
     private companion object {
         const val PREFS_NAME = "settings"
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_THEME_HUE = "theme_hue"
+        const val KEY_WEB_TEXT_ZOOM = "web_text_zoom"
     }
 }

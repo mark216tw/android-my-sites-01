@@ -2,6 +2,32 @@
 
 本專案遵循簡化的版本紀錄格式。日期為西元年-月-日。
 
+## [1.1.0-prerelease] - 2026-10-21
+
+### 新增
+
+- 站台瀏覽頁字型縮放
+  - 標題列加入縮小／放大兩個圖示按鈕
+  - 支援 50%～200%，每次調整 10%
+  - 倍率全域保存，重新開啟 App 後仍會保留
+
+### 變更
+
+- 首頁站台卡片改用較淡的主題色底色，跟隨主題設定與深色模式
+- 新增站台按鈕從右下角移至右上角工具列
+- 更新首頁空清單提示與相關文件
+
+### 建置
+
+- 版本名稱：`1.1.0-prerelease`
+- Version Code：`2`
+- 產出：`app-prerelease.apk`
+
+### 測試
+
+- 共 18 項 JVM 單元測試通過
+- Android Lint 通過
+
 ## [1.0.0-prerelease] - 2026-10-18
 
 ### 新增
@@ -50,4 +76,5 @@
 - 部分網站可能因登入、憑證、X-Frame-Options 或 WebView 相容性而無法正常顯示
 - 允許 `http://` 站台，使用時請注意連線安全
 
+[1.1.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease
 [1.0.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.0.0-prerelease

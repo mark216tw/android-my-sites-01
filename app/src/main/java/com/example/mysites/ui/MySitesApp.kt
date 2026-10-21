@@ -20,6 +20,7 @@ fun MySitesApp(
 ) {
     val navController = rememberNavController()
     val sites by store.sites.collectAsStateWithLifecycle()
+    val settings by settingsStore.settings.collectAsStateWithLifecycle()
 
     NavHost(
         navController = navController,
@@ -57,6 +58,8 @@ fun MySitesApp(
             } else {
                 SiteWebScreen(
                     site = site,
+                    textZoom = settings.webTextZoom,
+                    onTextZoomChange = settingsStore::setWebTextZoom,
                     onBack = { navController.popBackStack() },
                 )
             }

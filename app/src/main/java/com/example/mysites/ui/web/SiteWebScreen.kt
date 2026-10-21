@@ -34,11 +34,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.TextDecrease
+import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -48,6 +49,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,24 +57,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import com.example.mysites.R
+import com.example.mysites.data.MAX_WEB_TEXT_ZOOM
+import com.example.mysites.data.MIN_WEB_TEXT_ZOOM
 import com.example.mysites.data.Site
+import com.example.mysites.data.WEB_TEXT_ZOOM_STEP
 
 @Composable
 fun SiteWebScreen(
     site: Site,
+    textZoom: Int,
+    onTextZoomChange: (Int) -> Unit,
     onBack: () -> Unit,
 ) {
-    val context = LocalContext.current
     var webView by remember { mutableStateOf<WebView?>(null) }
     var progress by remember { mutableIntStateOf(0) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(textZoom, webView) {
+        webView?.settings?.textZoom = textZoom
+    }
 
     BackHandler {
         val view = webView
@@ -116,7 +125,24 @@ fun SiteWebScreen(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(
+                    onClick = { onTextZoomChange(textZoom - WEB_TEXT_ZOOM_STEP) },
+                    enabled = textZoom > MIN_WEB_TEXT_ZOOM,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.TextDecrease,
+                        contentDescription = stringResource(R.string.zoom_out),
+                    )
+                }
+                IconButton(
+                    onClick = { onTextZoomChange(textZoom + WEB_TEXT_ZOOM_STEP) },
+                    enabled = textZoom < MAX_WEB_TEXT_ZOOM,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.TextIncrease,
+                        contentDescription = stringResource(R.string.zoom_in),
+                    )
+                }
             }
 
             if (progress in 1..99) {
@@ -137,6 +163,7 @@ fun SiteWebScreen(
                         createWebView(
                             context = ctx,
                             url = site.url,
+                            initialTextZoom = textZoom,
                             onProgress = { newProgress ->
                                 progress = newProgress
                                 if (newProgress == 0) {
@@ -214,6 +241,7 @@ private fun ErrorOverlay(
 private fun createWebView(
     context: Context,
     url: String,
+    initialTextZoom: Int,
     onProgress: (Int) -> Unit,
     onError: (String) -> Unit,
     onCreated: (WebView) -> Unit,
@@ -238,6 +266,7 @@ private fun createWebView(
             displayZoomControls = false
             useWideViewPort = true
             loadWithOverviewMode = true
+            textZoom = initialTextZoom
         }
 
         CookieManager.getInstance().apply {

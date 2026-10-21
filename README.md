@@ -4,7 +4,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.0.0--prerelease-orange)](https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.0.0-prerelease)
+[![Release](https://img.shields.io/badge/release-v1.1.0--prerelease-orange)](https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease)
 
 「我的站台」是一款以 Kotlin 與 Jetpack Compose 開發的 Android App，讓使用者把自己常用的網站收進清單，並直接在 App 內以 WebView 瀏覽。站台資料完全保存在裝置本機，可透過 JSON 匯出與匯入備份。
 
@@ -20,9 +20,11 @@
 ## 功能特色
 
 - 新增、編輯、刪除站台
+- 首頁站台卡片使用淡主題色底色，跟隨主題設定
 - 首頁即時搜尋站台名稱與網址
 - 長按拖曳排序，順序會自動保存
 - App 內 WebView 瀏覽，支援載入進度、錯誤重試、外部連結與檔案下載
+- 站台頁可放大／縮小字型（50%～200%），倍率會自動保存
 - 站台頁左上角返回清單；Android 返回鍵會先回上一頁網頁，沒有上一頁才回清單
 - JSON 匯出與匯入（使用系統檔案選擇器，不需要儲存權限）
 - 顯示模式：系統、淺色、深色
@@ -32,10 +34,10 @@
 
 ## 下載 Pre-release
 
-- 版本：`1.0.0-prerelease`
-- 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.0.0-prerelease>
-- APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.0.0-prerelease/app-prerelease.apk>
-- SHA-256：`18F17147501229E05C79D4311012DAE21A8C60CE0D07937E6F7EC0B69321B124`
+- 版本：`1.1.0-prerelease`
+- 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease>
+- APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.1.0-prerelease/app-prerelease.apk>
+- SHA-256：`CCC8ADAA4E63B00E3D3DC1BE139C3FC09B0691FE319B761E731E9E7ED66C8500`
 
 安裝前請確認 Android 裝置允許安裝未知來源的 APK。此版本使用 Debug 金鑰簽署，僅供測試與驗證。
 
@@ -83,14 +85,15 @@ macOS / Linux：
 
 ## 操作概覽
 
-1. 首頁點擊右下角 **+** 新增站台，輸入名稱與網址。
+1. 首頁點擊右上角 **+** 新增站台，輸入名稱與網址。
 2. 點擊站台卡片，在 App 內開啟網站。
 3. 站台頁左上角 **←** 回到清單；Android 返回鍵會先處理 WebView 上一頁。
-4. 首頁搜尋列可過濾名稱或網址。
-5. 長按站台左側拖曳把手可排序。
-6. 站台右側選單可編輯或刪除。
-7. 右上角可匯入 JSON、匯出 JSON、進入設定。
-8. 設定頁可切換顯示模式、選擇主題色或拖曳 Hue 滑桿。
+4. 站台頁右上角 **A−／A+** 可縮小或放大字型，倍率會自動保存。
+5. 首頁搜尋列可過濾名稱或網址。
+6. 長按站台左側拖曳把手可排序。
+7. 站台右側選單可編輯或刪除。
+8. 右上角另有匯入 JSON、匯出 JSON 與設定。
+9. 設定頁可切換顯示模式、選擇主題色或拖曳 Hue 滑桿。
 
 更完整的使用說明請見 [使用指南](docs/使用指南.md)。
 
@@ -124,6 +127,7 @@ macOS / Linux：
 - [系統架構與技術文件](docs/系統架構與技術文件.md)
 - [系統設計文件](docs/系統設計文件.md)
 - [建置與發行指南](docs/建置與發行指南.md)
+- [v1.1.0-prerelease 發行說明](docs/發行說明-v1.1.0-prerelease.md)
 - [v1.0.0-prerelease 發行說明](docs/發行說明-v1.0.0-prerelease.md)
 - [變更紀錄](CHANGELOG.md)
 
@@ -131,9 +135,9 @@ macOS / Linux：
 
 | Build Type | R8 壓縮 | 簽署 | 版本名稱 | 用途 |
 | --- | --- | --- | --- | --- |
-| `debug` | 否 | Debug 金鑰 | `1.0.0` | 本機開發 |
-| `release` | 否 | 未設定正式簽署 | `1.0.0` | 預留正式發行 |
-| `prerelease` | 是（含資源縮減） | Debug 金鑰 | `1.0.0-prerelease` | 測試發行 |
+| `debug` | 否 | Debug 金鑰 | `1.1.0` | 本機開發 |
+| `release` | 否 | 未設定正式簽署 | `1.1.0` | 預留正式發行 |
+| `prerelease` | 是（含資源縮減） | Debug 金鑰 | `1.1.0-prerelease` | 測試發行 |
 
 ## 驗證狀態
 
