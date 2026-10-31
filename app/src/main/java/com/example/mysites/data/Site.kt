@@ -9,6 +9,7 @@ data class Site(
     val name: String,
     val url: String,
     val createdAt: Long = 0L,
+    val textZoom: Int = DEFAULT_WEB_TEXT_ZOOM,
 ) {
     companion object {
         fun create(name: String, url: String): Site = Site(

@@ -31,10 +31,17 @@ class SettingsStore(context: Context) {
         prefs.edit { putInt(KEY_THEME_HUE, _settings.value.themeHue) }
     }
 
-    fun setWebTextZoom(zoom: Int) {
-        val safeZoom = zoom.coerceIn(MIN_WEB_TEXT_ZOOM, MAX_WEB_TEXT_ZOOM)
-        _settings.update { it.copy(webTextZoom = safeZoom) }
-        prefs.edit { putInt(KEY_WEB_TEXT_ZOOM, safeZoom) }
+    fun lastSiteId(): String? = prefs.getString(KEY_LAST_SITE_ID, null)
+        ?.takeIf { it.isNotBlank() }
+
+    fun setLastSiteId(id: String?) {
+        prefs.edit {
+            if (id == null) {
+                remove(KEY_LAST_SITE_ID)
+            } else {
+                putString(KEY_LAST_SITE_ID, id)
+            }
+        }
     }
 
     private fun readSettings(): AppSettings {
@@ -43,15 +50,13 @@ class SettingsStore(context: Context) {
             ?.let { name -> ThemeMode.entries.firstOrNull { it.name == name } }
             ?: ThemeMode.SYSTEM
         val hue = prefs.getInt(KEY_THEME_HUE, DEFAULT_THEME_HUE).coerceIn(0, 360)
-        val zoom = prefs.getInt(KEY_WEB_TEXT_ZOOM, DEFAULT_WEB_TEXT_ZOOM)
-            .coerceIn(MIN_WEB_TEXT_ZOOM, MAX_WEB_TEXT_ZOOM)
-        return AppSettings(themeMode = mode, themeHue = hue, webTextZoom = zoom)
+        return AppSettings(themeMode = mode, themeHue = hue)
     }
 
     private companion object {
         const val PREFS_NAME = "settings"
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_THEME_HUE = "theme_hue"
-        const val KEY_WEB_TEXT_ZOOM = "web_text_zoom"
+        const val KEY_LAST_SITE_ID = "last_site_id"
     }
 }

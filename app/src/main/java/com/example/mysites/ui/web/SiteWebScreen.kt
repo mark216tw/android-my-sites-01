@@ -71,7 +71,6 @@ import com.example.mysites.data.WEB_TEXT_ZOOM_STEP
 @Composable
 fun SiteWebScreen(
     site: Site,
-    textZoom: Int,
     onTextZoomChange: (Int) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -79,8 +78,8 @@ fun SiteWebScreen(
     var progress by remember { mutableIntStateOf(0) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(textZoom, webView) {
-        webView?.settings?.textZoom = textZoom
+    LaunchedEffect(site.textZoom, webView) {
+        webView?.settings?.textZoom = site.textZoom
     }
 
     BackHandler {
@@ -126,8 +125,8 @@ fun SiteWebScreen(
                     overflow = TextOverflow.Ellipsis,
                 )
                 IconButton(
-                    onClick = { onTextZoomChange(textZoom - WEB_TEXT_ZOOM_STEP) },
-                    enabled = textZoom > MIN_WEB_TEXT_ZOOM,
+                    onClick = { onTextZoomChange(site.textZoom - WEB_TEXT_ZOOM_STEP) },
+                    enabled = site.textZoom > MIN_WEB_TEXT_ZOOM,
                 ) {
                     Icon(
                         imageVector = Icons.Default.TextDecrease,
@@ -135,8 +134,8 @@ fun SiteWebScreen(
                     )
                 }
                 IconButton(
-                    onClick = { onTextZoomChange(textZoom + WEB_TEXT_ZOOM_STEP) },
-                    enabled = textZoom < MAX_WEB_TEXT_ZOOM,
+                    onClick = { onTextZoomChange(site.textZoom + WEB_TEXT_ZOOM_STEP) },
+                    enabled = site.textZoom < MAX_WEB_TEXT_ZOOM,
                 ) {
                     Icon(
                         imageVector = Icons.Default.TextIncrease,
@@ -163,7 +162,7 @@ fun SiteWebScreen(
                         createWebView(
                             context = ctx,
                             url = site.url,
-                            initialTextZoom = textZoom,
+                            initialTextZoom = site.textZoom,
                             onProgress = { newProgress ->
                                 progress = newProgress
                                 if (newProgress == 0) {

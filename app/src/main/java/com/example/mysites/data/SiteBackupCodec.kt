@@ -44,6 +44,7 @@ object SiteBackupCodec {
                 name = name,
                 url = url,
                 createdAt = if (site.createdAt > 0L) site.createdAt else System.currentTimeMillis(),
+                textZoom = site.textZoom.coerceIn(MIN_WEB_TEXT_ZOOM, MAX_WEB_TEXT_ZOOM),
             )
         }
     }

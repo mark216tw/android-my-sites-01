@@ -16,5 +16,4 @@ const val WEB_TEXT_ZOOM_STEP = 10
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val themeHue: Int = DEFAULT_THEME_HUE,
-    val webTextZoom: Int = DEFAULT_WEB_TEXT_ZOOM,
 )

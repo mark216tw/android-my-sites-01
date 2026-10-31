@@ -1,9 +1,18 @@
 package com.example.mysites.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,13 +27,29 @@ fun MySitesApp(
     store: SiteStore,
     settingsStore: SettingsStore,
 ) {
-    val navController = rememberNavController()
+    val loaded by store.loaded.collectAsStateWithLifecycle()
+
+    if (!loaded) {
+        AppLoadingScreen()
+        return
+    }
+
     val sites by store.sites.collectAsStateWithLifecycle()
-    val settings by settingsStore.settings.collectAsStateWithLifecycle()
+    val navController = rememberNavController()
+    val startSiteId = remember {
+        settingsStore.lastSiteId()?.takeIf { id -> sites.any { it.id == id } }
+    }
+
+    LaunchedEffect(Unit) {
+        val savedId = settingsStore.lastSiteId()
+        if (savedId != null && sites.none { it.id == savedId }) {
+            settingsStore.setLastSiteId(null)
+        }
+    }
 
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = startSiteId?.let { "site/$it" } ?: "home",
     ) {
         composable("home") {
             HomeScreen(
@@ -53,16 +78,49 @@ fun MySitesApp(
 
             if (site == null) {
                 LaunchedEffect(siteId) {
-                    navController.popBackStack()
+                    settingsStore.setLastSiteId(null)
+                    navController.goHome()
                 }
             } else {
+                LaunchedEffect(site.id) {
+                    settingsStore.setLastSiteId(site.id)
+                }
+
                 SiteWebScreen(
                     site = site,
-                    textZoom = settings.webTextZoom,
-                    onTextZoomChange = settingsStore::setWebTextZoom,
-                    onBack = { navController.popBackStack() },
+                    onTextZoomChange = { zoom ->
+                        store.update(site.copy(textZoom = zoom))
+                    },
+                    onBack = {
+                        settingsStore.setLastSiteId(null)
+                        if (!navController.popBackStack()) {
+                            navController.goHome()
+                        }
+                    },
                 )
             }
+        }
+    }
+}
+
+private fun NavHostController.goHome() {
+    navigate("home") {
+        popUpTo(graph.id) { inclusive = true }
+        launchSingleTop = true
+    }
+}
+
+@Composable
+private fun AppLoadingScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
         }
     }
 }

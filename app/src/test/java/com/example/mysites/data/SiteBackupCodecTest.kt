@@ -79,4 +79,39 @@ class SiteBackupCodecTest {
         assertEquals(1, decoded.size)
         assertTrue(decoded[0].id.isNotBlank())
     }
+
+    @Test
+    fun missingTextZoomDefaultsToDefault() {
+        val raw = """[{"id":"x","name":"No zoom","url":"https://example.com"}]"""
+
+        val decoded = SiteBackupCodec.decode(raw)
+
+        assertEquals(1, decoded.size)
+        assertEquals(DEFAULT_WEB_TEXT_ZOOM, decoded[0].textZoom)
+    }
+
+    @Test
+    fun textZoomRoundTripsAndIsClamped() {
+        val withZoom = listOf(
+            Site(
+                id = "a",
+                name = "Zoomed",
+                url = "https://example.com",
+                createdAt = 1000L,
+                textZoom = 140,
+            ),
+        )
+        assertEquals(withZoom, SiteBackupCodec.decode(SiteBackupCodec.encode(withZoom)))
+
+        val raw = """
+            [
+              {"id":"a","name":"Too large","url":"https://example.com","textZoom":500},
+              {"id":"b","name":"Too small","url":"https://example.org","textZoom":10}
+            ]
+        """.trimIndent()
+        val decoded = SiteBackupCodec.decode(raw)
+
+        assertEquals(MAX_WEB_TEXT_ZOOM, decoded[0].textZoom)
+        assertEquals(MIN_WEB_TEXT_ZOOM, decoded[1].textZoom)
+    }
 }

@@ -2,6 +2,37 @@
 
 本專案遵循簡化的版本紀錄格式。日期為西元年-月-日。
 
+## [1.2.0-prerelease] - 2026-10-31
+
+### 新增
+
+- 每個站台各自保存字型倍率
+  - 倍率改為存在站台資料中，切換站台時自動套用該站台自己的設定
+  - 新站台與既有站台預設為 100%，範圍 50%～200%
+  - 匯出／匯入 JSON 會一併帶走字型倍率
+- 重新開啟 App 時回到上次瀏覽的站台
+  - 明確保存最後開啟的站台，不必依賴系統的導覽狀態還原
+  - 站台資料載入完成後才建立瀏覽頁，標題列與網頁同時出現，不再先顯示內容後才補上標題
+
+### 變更
+
+- 移除全域字型倍率設定，改由各站台獨立管理
+- 啟動時先顯示載入指示，待站台資料就緒後再進入畫面
+- 回到首頁時會清除「上次站台」紀錄
+
+### 建置
+
+- 版本名稱：`1.2.0-prerelease`
+- Version Code：`3`
+- 產出：`app-prerelease.apk`
+- APK 大小：1,421,397 bytes
+- SHA-256：`173C7D25070F57992D3189FE2BC2D2C8811532F0EC6396F4A8BA1FE49F201B38`
+
+### 測試
+
+- 共 20 項 JVM 單元測試通過
+- Android Lint 通過
+
 ## [1.1.0-prerelease] - 2026-10-21
 
 ### 新增
@@ -76,5 +107,6 @@
 - 部分網站可能因登入、憑證、X-Frame-Options 或 WebView 相容性而無法正常顯示
 - 允許 `http://` 站台，使用時請注意連線安全
 
+[1.2.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.2.0-prerelease
 [1.1.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease
 [1.0.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.0.0-prerelease
