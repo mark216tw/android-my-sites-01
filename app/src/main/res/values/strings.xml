@@ -32,6 +32,7 @@
     <string name="load_error">無法載入頁面</string>
     <string name="ssl_error">網站憑證有問題，無法安全載入</string>
     <string name="retry">重試</string>
+    <string name="refresh">重新載入</string>
     <string name="invalid_url">請輸入有效的網址</string>
     <string name="url_hint">例如 example.com</string>
     <string name="drag_handle">拖曳排序</string>

@@ -25,6 +25,7 @@
 - 長按拖曳排序，順序會自動保存
 - App 內 WebView 瀏覽，支援載入進度、錯誤重試、外部連結與檔案下載
 - 站台頁可放大／縮小字型（50%～200%），**每個站台各自保存**自己的倍率
+- 站台頁提供重新載入按鈕，可隨時重載目前網頁
 - 重新開啟 App 會回到上次瀏覽的站台，標題列與網頁同時顯示
 - 站台頁左上角返回清單；Android 返回鍵會先回上一頁網頁，沒有上一頁才回清單
 - JSON 匯出與匯入（使用系統檔案選擇器，不需要儲存權限）
@@ -38,7 +39,7 @@
 - 版本：`1.2.0-prerelease`
 - 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.2.0-prerelease>
 - APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.2.0-prerelease/app-prerelease.apk>
-- SHA-256：`173C7D25070F57992D3189FE2BC2D2C8811532F0EC6396F4A8BA1FE49F201B38`
+- SHA-256：`71905D32FD7018E649D4A578139C2413856F319A678F254410ECC414CDDB23F8`
 
 安裝前請確認 Android 裝置允許安裝未知來源的 APK。此版本使用 Debug 金鑰簽署，僅供測試與驗證。
 
@@ -89,7 +90,7 @@ macOS / Linux：
 1. 首頁點擊右上角 **+** 新增站台，輸入名稱與網址。
 2. 點擊站台卡片，在 App 內開啟網站。
 3. 站台頁左上角 **←** 回到清單；Android 返回鍵會先處理 WebView 上一頁。
-4. 站台頁右上角 **A−／A+** 可縮小或放大字型；每個站台會各自記住自己的倍率。
+4. 站台頁右上角 **A−／A+** 可縮小或放大字型；A+ 右側的重新載入按鈕可重載目前網頁。
 5. 重新開啟 App 時會回到上次瀏覽的站台；回到首頁後再次啟動則顯示首頁。
 6. 首頁搜尋列可過濾名稱或網址。
 7. 長按站台左側拖曳把手可排序。
@@ -148,7 +149,7 @@ macOS / Linux：
 - `:app:testDebugUnitTest`：20 項測試通過
 - `:app:lintDebug`：通過
 - `:app:assemblePrerelease`：通過（R8、資源縮減、Debug 簽署）
-- `app-prerelease.apk`：1,421,397 bytes，SHA-256 `173C7D25070F57992D3189FE2BC2D2C8811532F0EC6396F4A8BA1FE49F201B38`
+- `app-prerelease.apk`：1,421,801 bytes，SHA-256 `71905D32FD7018E649D4A578139C2413856F319A678F254410ECC414CDDB23F8`
 - 實機／模擬器瀏覽與系統列視覺驗證：目前環境無連接裝置，尚未執行
 
 ## 隱私與安全

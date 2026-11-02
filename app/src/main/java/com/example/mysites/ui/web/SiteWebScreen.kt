@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.TextDecrease
 import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.material.icons.filled.Warning
@@ -140,6 +141,18 @@ fun SiteWebScreen(
                     Icon(
                         imageVector = Icons.Default.TextIncrease,
                         contentDescription = stringResource(R.string.zoom_in),
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        errorMessage = null
+                        webView?.reload()
+                    },
+                    enabled = webView != null,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.refresh),
                     )
                 }
             }

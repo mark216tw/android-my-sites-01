@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-11-02 - v1.2.0（versionCode 4）
+
+### 目標
+- 在瀏覽頁放大字型（A+）按鈕右側新增重新載入按鈕，方便直接重載目前網頁。
+
+### 變更
+- `ui/web/SiteWebScreen.kt`：於 A+ 按鈕後新增 `Refresh` 圖示按鈕，點擊時清除錯誤訊息並呼叫 `WebView.reload()`；WebView 尚未建立時停用。
+- `res/values/strings.xml`：新增 `refresh` 字串（重新載入）。
+- `app/build.gradle.kts`：`versionCode` 由 3 遞增為 4，`versionName` 維持 1.2.0。
+- `README.md`、`CHANGELOG.md`、`docs/使用指南.md`、`docs/系統架構與技術文件.md`、`docs/系統設計文件.md`、`docs/發行說明-v1.2.0-prerelease.md`、`docs/建置與發行指南.md`：同步更新功能說明、Version Code、APK 大小與 SHA-256。
+
+### 建置與發行
+- 驗證：`:app:assembleDebug`、`:app:testDebugUnitTest`（20 項）、`:app:lintDebug`、`:app:assemblePrerelease` 均通過。
+- 產出：`app-prerelease.apk`，1,421,801 bytes。
+- 版本：`versionCode 4`、`versionName 1.2.0-prerelease`。
+- SHA-256：`71905D32FD7018E649D4A578139C2413856F319A678F254410ECC414CDDB23F8`。
+- 已覆蓋 GitHub Release `v1.2.0-prerelease`。
+
+### 問題與解法
+- 無。
+
+### 待辦／已知限制
+- 尚未實機驗證重新載入後的字型倍率是否維持（沿用既有 `textZoom` 設定，預期維持）。
+
+---
+
 ## 2026-10-31 - v1.2.0-prerelease（versionCode 3）
 
 ### 目標
