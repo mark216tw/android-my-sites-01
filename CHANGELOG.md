@@ -2,6 +2,45 @@
 
 本專案遵循簡化的版本紀錄格式。日期為西元年-月-日。
 
+## [1.3.0] - 2026-11-02
+
+### 新增
+
+- 站台標籤
+  - 每個站台可選擇多個標籤
+  - 標籤可設定名稱、16 種顏色，並可拖曳自訂排序
+  - 標籤可新增、編輯、刪除
+  - 刪除標籤時會同步從站台移除
+- 站台最愛
+  - 站台卡片可切換最愛狀態
+  - 首頁可篩選「全部」、「最愛」與各標籤
+- 首頁排序
+  - 搜尋列右側新增排序選單
+  - 支援自訂順序、名稱（A→Z／Z→A）、最近使用（新→舊／舊→新）、加入時間（新→舊／舊→新）
+  - 排序選擇會保存
+- 標籤管理入口
+  - 站台編輯的標籤選擇視窗可直接新增／管理標籤
+  - 設定頁也可開啟標籤管理
+
+### 變更
+
+- JSON 備份格式提升為 version 2，包含標籤、最愛、最近使用與站台標籤關聯
+- 舊版 version 1 備份與原始陣列格式仍可匯入
+- 站台卡片新增最愛星號與標籤顯示
+
+### 建置
+
+- 版本名稱：`1.3.0-prerelease`
+- Version Code：`5`
+- 產出：`app-prerelease.apk`
+- APK 大小：1,484,465 bytes
+- SHA-256：`46A3DB73494BA423448079CC02168A4B8BB4A67D8E427EE29957EE5FCA69BB53`
+
+### 測試
+
+- 30 項 JVM 單元測試通過
+- Android Lint 通過
+
 ## [1.2.0-prerelease] - 2026-11-02
 
 ### 新增
@@ -108,6 +147,7 @@
 - 部分網站可能因登入、憑證、X-Frame-Options 或 WebView 相容性而無法正常顯示
 - 允許 `http://` 站台，使用時請注意連線安全
 
+[1.3.0]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.3.0-prerelease
 [1.2.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.2.0-prerelease
 [1.1.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease
 [1.0.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.0.0-prerelease

@@ -10,27 +10,56 @@ import org.junit.Test
 import java.time.Instant
 
 class SiteBackupCodecTest {
+    private val tags = listOf(
+        Tag(id = "tag-work", name = "工作", colorIndex = 3),
+        Tag(id = "tag-fun", name = "娛樂", colorIndex = 12),
+    )
+
     private val sites = listOf(
-        Site(id = "a", name = "Example", url = "https://example.com", createdAt = 1000L),
-        Site(id = "b", name = "Local", url = "http://localhost:8080", createdAt = 2000L),
+        Site(
+            id = "a",
+            name = "Example",
+            url = "https://example.com",
+            createdAt = 1000L,
+            favorite = true,
+            lastUsedAt = 3000L,
+            tagIds = listOf("tag-work"),
+        ),
+        Site(
+            id = "b",
+            name = "Local",
+            url = "http://localhost:8080",
+            createdAt = 2000L,
+            tagIds = listOf("tag-work", "tag-fun"),
+        ),
     )
 
     @Test
     fun roundTripPreservesOrderAndFields() {
-        val encoded = SiteBackupCodec.encode(sites, exportedAt = Instant.parse("2026-10-18T00:00:00Z"))
+        val encoded = SiteBackupCodec.encode(
+            sites = sites,
+            tags = tags,
+            exportedAt = Instant.parse("2026-10-18T00:00:00Z"),
+        )
         val decoded = SiteBackupCodec.decode(encoded)
 
-        assertEquals(sites, decoded)
+        assertEquals(sites, decoded.sites)
+        assertEquals(tags, decoded.tags)
     }
 
     @Test
     fun encodedJsonContainsVersionAndExportTime() {
-        val encoded = SiteBackupCodec.encode(sites, exportedAt = Instant.parse("2026-10-18T00:00:00Z"))
+        val encoded = SiteBackupCodec.encode(
+            sites = sites,
+            tags = tags,
+            exportedAt = Instant.parse("2026-10-18T00:00:00Z"),
+        )
         val root = Json.parseToJsonElement(encoded).jsonObject
 
-        assertEquals(1, root.getValue("version").jsonPrimitive.content.toInt())
+        assertEquals(2, root.getValue("version").jsonPrimitive.content.toInt())
         assertEquals("2026-10-18T00:00:00Z", root.getValue("exportedAt").jsonPrimitive.content)
         assertEquals(2, root.getValue("sites").jsonArray.size)
+        assertEquals(2, root.getValue("tags").jsonArray.size)
     }
 
     @Test
@@ -44,8 +73,30 @@ class SiteBackupCodecTest {
 
         val decoded = SiteBackupCodec.decode(raw)
 
-        assertEquals(2, decoded.size)
-        assertEquals("https://example.com", decoded[0].url)
+        assertEquals(2, decoded.sites.size)
+        assertTrue(decoded.tags.isEmpty())
+        assertEquals("https://example.com", decoded.sites[0].url)
+    }
+
+    @Test
+    fun decodesLegacyVersionOneWithoutTags() {
+        val raw = """
+            {
+              "version": 1,
+              "exportedAt": "2026-10-18T00:00:00Z",
+              "sites": [
+                {"id":"1","name":"Legacy","url":"example.com"}
+              ]
+            }
+        """.trimIndent()
+
+        val decoded = SiteBackupCodec.decode(raw)
+
+        assertEquals(1, decoded.sites.size)
+        assertTrue(decoded.tags.isEmpty())
+        assertEquals(false, decoded.sites[0].favorite)
+        assertEquals(0L, decoded.sites[0].lastUsedAt)
+        assertTrue(decoded.sites[0].tagIds.isEmpty())
     }
 
     @Test
@@ -65,9 +116,9 @@ class SiteBackupCodecTest {
 
         val decoded = SiteBackupCodec.decode(raw)
 
-        assertEquals(2, decoded.size)
-        assertEquals("Valid", decoded[0].name)
-        assertEquals("Trimmed", decoded[1].name)
+        assertEquals(2, decoded.sites.size)
+        assertEquals("Valid", decoded.sites[0].name)
+        assertEquals("Trimmed", decoded.sites[1].name)
     }
 
     @Test
@@ -76,8 +127,8 @@ class SiteBackupCodecTest {
 
         val decoded = SiteBackupCodec.decode(raw)
 
-        assertEquals(1, decoded.size)
-        assertTrue(decoded[0].id.isNotBlank())
+        assertEquals(1, decoded.sites.size)
+        assertTrue(decoded.sites[0].id.isNotBlank())
     }
 
     @Test
@@ -86,8 +137,8 @@ class SiteBackupCodecTest {
 
         val decoded = SiteBackupCodec.decode(raw)
 
-        assertEquals(1, decoded.size)
-        assertEquals(DEFAULT_WEB_TEXT_ZOOM, decoded[0].textZoom)
+        assertEquals(1, decoded.sites.size)
+        assertEquals(DEFAULT_WEB_TEXT_ZOOM, decoded.sites[0].textZoom)
     }
 
     @Test
@@ -101,7 +152,7 @@ class SiteBackupCodecTest {
                 textZoom = 140,
             ),
         )
-        assertEquals(withZoom, SiteBackupCodec.decode(SiteBackupCodec.encode(withZoom)))
+        assertEquals(withZoom, SiteBackupCodec.decode(SiteBackupCodec.encode(withZoom)).sites)
 
         val raw = """
             [
@@ -111,7 +162,34 @@ class SiteBackupCodecTest {
         """.trimIndent()
         val decoded = SiteBackupCodec.decode(raw)
 
-        assertEquals(MAX_WEB_TEXT_ZOOM, decoded[0].textZoom)
-        assertEquals(MIN_WEB_TEXT_ZOOM, decoded[1].textZoom)
+        assertEquals(MAX_WEB_TEXT_ZOOM, decoded.sites[0].textZoom)
+        assertEquals(MIN_WEB_TEXT_ZOOM, decoded.sites[1].textZoom)
+    }
+
+    @Test
+    fun validatesTagsAndFiltersUnknownSiteTagIds() {
+        val raw = """
+            {
+              "version": 2,
+              "tags": [
+                {"id":"t1","name":" 工作 ","colorIndex":3},
+                {"id":"t1","name":"Duplicate","colorIndex":4},
+                {"id":"","name":"No id","colorIndex":99},
+                {"id":"t2","name":"   ","colorIndex":0}
+              ],
+              "sites": [
+                {"id":"s1","name":"Site","url":"example.com","tagIds":["t1","t1","missing"]}
+              ]
+            }
+        """.trimIndent()
+
+        val decoded = SiteBackupCodec.decode(raw)
+
+        assertEquals(2, decoded.tags.size)
+        assertEquals("工作", decoded.tags[0].name)
+        assertEquals(3, decoded.tags[0].colorIndex)
+        assertTrue(decoded.tags[1].id.isNotBlank())
+        assertEquals(TAG_COLOR_COUNT - 1, decoded.tags[1].colorIndex)
+        assertEquals(listOf("t1"), decoded.sites[0].tagIds)
     }
 }

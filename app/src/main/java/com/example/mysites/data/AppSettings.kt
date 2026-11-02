@@ -6,6 +6,16 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class SiteSortMode {
+    CUSTOM,
+    NAME_ASC,
+    NAME_DESC,
+    LAST_USED_DESC,
+    LAST_USED_ASC,
+    CREATED_DESC,
+    CREATED_ASC,
+}
+
 const val DEFAULT_THEME_HUE = 215
 
 const val DEFAULT_WEB_TEXT_ZOOM = 100
@@ -16,4 +26,5 @@ const val WEB_TEXT_ZOOM_STEP = 10
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val themeHue: Int = DEFAULT_THEME_HUE,
+    val siteSortMode: SiteSortMode = SiteSortMode.CUSTOM,
 )

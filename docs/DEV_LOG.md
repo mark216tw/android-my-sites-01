@@ -4,6 +4,43 @@
 
 ---
 
+## 2026-11-02 - v1.3.0（versionCode 5）
+
+### 目標
+- 支援站台多標籤、最愛、首頁篩選與多種排序方式。
+- 提供可新增、編輯、刪除、調整順序與顏色的標籤管理介面。
+
+### 變更
+- `data/Site.kt`：新增 `Tag`；`Site` 新增 `favorite`、`lastUsedAt`、`tagIds`；`SiteBackup` 提升為 version 2 並加入 `tags`。
+- `data/SiteBackupCodec.kt`：匯出／匯入標籤、最愛、最近使用；相容舊版格式並清洗無效標籤。
+- `data/SiteStore.kt`：新增標籤 CRUD／排序、最愛切換、標籤指派、最近使用更新；站台與標籤共用同一份持久化檔案。
+- `data/AppSettings.kt`、`data/SettingsStore.kt`：新增並保存 `SiteSortMode`。
+- `data/SiteListQuery.kt`：新增篩選與排序純函式。
+- `ui/theme/TagColors.kt`：新增 16 色標籤色盤與依亮度自動選擇的 `tagOnColor()`。
+- `ui/tags/TagDialogs.kt`：新增標籤編輯、管理與站台標籤選擇對話框。
+- `ui/home/HomeScreen.kt`：新增全部／最愛／標籤篩選列、搜尋列右側排序選單、最愛星號與卡片標籤顯示；首頁不顯示標籤管理按鈕。
+- `ui/settings/SettingsScreen.kt`：新增標籤管理入口；標籤管理也可從站台編輯的標籤選擇進入。
+- `ui/MySitesApp.kt`：進入站台時更新最近使用時間。
+- `res/values/strings.xml`：新增標籤、最愛、篩選、排序相關字串。
+
+### 問題與解法
+- 手動拖曳順序與新排序選項會互相覆蓋 → 新增「自訂順序」模式，僅在此模式且未搜尋、未篩選時啟用拖曳。
+- 舊版站台資料沒有標籤欄位 → 所有新欄位提供預設值，解碼時自動補齊。
+- 深色標籤上的打勾圖示不明顯 → 依背景亮度改用白色或深色打勾。
+- 首頁篩選列不需要標籤管理入口 → 移除該按鈕，管理入口保留在設定頁與站台編輯。
+
+### 建置與發行
+- 驗證：`:app:assembleDebug`、`:app:testDebugUnitTest`（30 項）、`:app:lintDebug`、`:app:assemblePrerelease` 均通過。
+- 產出：`app-prerelease.apk`，1,484,465 bytes。
+- 版本：`versionCode 5`、`versionName 1.3.0-prerelease`。
+- SHA-256：`46A3DB73494BA423448079CC02168A4B8BB4A67D8E427EE29957EE5FCA69BB53`。
+- 已建立 GitHub Release `v1.3.0-prerelease`。
+
+### 待辦／已知限制
+- 尚未在實機或模擬器驗證拖曳、標籤對話框與 16 色色盤的視覺效果。
+
+---
+
 ## 2026-11-02 - v1.2.0（versionCode 4）
 
 ### 目標

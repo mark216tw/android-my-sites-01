@@ -54,6 +54,7 @@ fun MySitesApp(
         composable("home") {
             HomeScreen(
                 store = store,
+                settingsStore = settingsStore,
                 onOpenSite = { site ->
                     navController.navigate("site/${site.id}")
                 },
@@ -68,6 +69,7 @@ fun MySitesApp(
         composable("settings") {
             SettingsScreen(
                 settingsStore = settingsStore,
+                store = store,
                 onBack = { navController.popBackStack() },
             )
         }
@@ -83,6 +85,7 @@ fun MySitesApp(
                 }
             } else {
                 LaunchedEffect(site.id) {
+                    store.markUsed(site.id)
                     settingsStore.setLastSiteId(site.id)
                 }
 

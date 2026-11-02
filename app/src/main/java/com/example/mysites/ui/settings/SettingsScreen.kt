@@ -19,9 +19,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -32,6 +35,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mysites.R
 import com.example.mysites.data.SettingsStore
+import com.example.mysites.data.SiteStore
 import com.example.mysites.data.ThemeMode
+import com.example.mysites.ui.tags.TagManagerDialog
 import com.example.mysites.ui.theme.ThemePresets
 import com.example.mysites.ui.theme.presetForHue
 import com.example.mysites.ui.theme.themeSeedColor
@@ -55,9 +63,12 @@ import kotlin.math.roundToInt
 @Composable
 fun SettingsScreen(
     settingsStore: SettingsStore,
+    store: SiteStore,
     onBack: () -> Unit,
 ) {
     val settings by settingsStore.settings.collectAsStateWithLifecycle()
+    val tags by store.tags.collectAsStateWithLifecycle()
+    var showTagManager by remember { mutableStateOf(false) }
     val currentPreset = presetForHue(settings.themeHue)
     val currentColor = themeSeedColor(settings.themeHue)
     val currentName = if (currentPreset != null) {
@@ -193,7 +204,41 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+
+            Spacer(modifier = Modifier.height(28.dp))
+            SectionTitle(stringResource(R.string.tag_management))
+
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.tag_management)) },
+                supportingContent = {
+                    Text(stringResource(R.string.tag_management_hint, tags.size))
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Label,
+                        contentDescription = null,
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { showTagManager = true },
+            )
         }
+    }
+
+    if (showTagManager) {
+        TagManagerDialog(
+            tags = tags,
+            onDismiss = { showTagManager = false },
+            onAdd = { name, colorIndex -> store.addTag(name, colorIndex) },
+            onUpdate = { tag -> store.updateTag(tag) },
+            onDelete = { id -> store.deleteTag(id) },
+            onMove = { from, to -> store.moveTag(from, to) },
+        )
     }
 }
 

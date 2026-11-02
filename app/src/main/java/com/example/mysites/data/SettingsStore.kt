@@ -31,6 +31,11 @@ class SettingsStore(context: Context) {
         prefs.edit { putInt(KEY_THEME_HUE, _settings.value.themeHue) }
     }
 
+    fun setSiteSortMode(mode: SiteSortMode) {
+        _settings.update { it.copy(siteSortMode = mode) }
+        prefs.edit { putString(KEY_SITE_SORT_MODE, mode.name) }
+    }
+
     fun lastSiteId(): String? = prefs.getString(KEY_LAST_SITE_ID, null)
         ?.takeIf { it.isNotBlank() }
 
@@ -50,13 +55,18 @@ class SettingsStore(context: Context) {
             ?.let { name -> ThemeMode.entries.firstOrNull { it.name == name } }
             ?: ThemeMode.SYSTEM
         val hue = prefs.getInt(KEY_THEME_HUE, DEFAULT_THEME_HUE).coerceIn(0, 360)
-        return AppSettings(themeMode = mode, themeHue = hue)
+        val storedSortMode = prefs.getString(KEY_SITE_SORT_MODE, null)
+        val sortMode = storedSortMode
+            ?.let { name -> SiteSortMode.entries.firstOrNull { it.name == name } }
+            ?: SiteSortMode.CUSTOM
+        return AppSettings(themeMode = mode, themeHue = hue, siteSortMode = sortMode)
     }
 
     private companion object {
         const val PREFS_NAME = "settings"
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_THEME_HUE = "theme_hue"
+        const val KEY_SITE_SORT_MODE = "site_sort_mode"
         const val KEY_LAST_SITE_ID = "last_site_id"
     }
 }
