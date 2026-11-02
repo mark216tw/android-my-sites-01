@@ -4,6 +4,28 @@
 
 ---
 
+## 2026-11-02 - v1.3.0（versionCode 6）
+
+### 目標
+- 首頁工具列簡化：匯出、匯入、設定收合至右上角 ⋮ 選單。
+
+### 變更
+- `ui/home/HomeScreen.kt`：TopAppBar 只保留新增（＋）與更多（⋮）選單；移除匯入、匯出、設定獨立圖示，三項功能改由 `DropdownMenu` 操作。
+- `app/build.gradle.kts`：`versionCode` 5 → 6，`versionName` 維持 1.3.0。
+- `README.md`、`docs/使用指南.md`、`docs/系統設計文件.md`、`docs/系統架構與技術文件.md`、`docs/建置與發行指南.md`、`CHANGELOG.md`：同步更新操作說明與版本資訊。
+
+### 問題與解法
+- 無。
+
+### 建置與發行
+- 驗證：`:app:assembleDebug`、`:app:testDebugUnitTest`（30 項）、`:app:lintDebug`、`:app:assemblePrerelease` 均通過。
+- 產出：`app-prerelease.apk`，1,484,465 bytes。
+- 版本：`versionCode 6`、`versionName 1.3.0-prerelease`（版號維持 1.3.0 不變）。
+- SHA-256：`C86308CE8000B2F6EF06A2E21151C0E64384B738A6A979E19D5CC8D2AA77E974`。
+- 已刪除舊的 GitHub Release `v1.3.0-prerelease` 與標籤，重新發布至 GitHub Release。
+
+---
+
 ## 2026-11-02 - v1.3.0（versionCode 5）
 
 ### 目標

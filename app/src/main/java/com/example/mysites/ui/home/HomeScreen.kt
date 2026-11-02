@@ -117,6 +117,7 @@ fun HomeScreen(
 
     var query by rememberSaveable { mutableStateOf("") }
     var showAddDialog by rememberSaveable { mutableStateOf(false) }
+    var showMoreMenu by remember { mutableStateOf(false) }
     var showSortMenu by remember { mutableStateOf(false) }
     var editingSite by remember { mutableStateOf<Site?>(null) }
     var deletingSite by remember { mutableStateOf<Site?>(null) }
@@ -200,33 +201,63 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.home_title)) },
                 actions = {
-                    IconButton(onClick = { importLauncher.launch(IMPORT_MIME_TYPES) }) {
-                        Icon(
-                            imageVector = Icons.Default.UploadFile,
-                            contentDescription = stringResource(R.string.import_json),
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            exportLauncher.launch("my-sites-${LocalDate.now()}.json")
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = stringResource(R.string.export),
-                        )
-                    }
                     IconButton(onClick = { showAddDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = stringResource(R.string.add_site),
                         )
                     }
-                    IconButton(onClick = onOpenSettings) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.settings),
-                        )
+                    Box {
+                        IconButton(onClick = { showMoreMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(R.string.more),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMoreMenu,
+                            onDismissRequest = { showMoreMenu = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.import_json)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.UploadFile,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    showMoreMenu = false
+                                    importLauncher.launch(IMPORT_MIME_TYPES)
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Download,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    showMoreMenu = false
+                                    exportLauncher.launch("my-sites-${LocalDate.now()}.json")
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.settings)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    showMoreMenu = false
+                                    onOpenSettings()
+                                },
+                            )
+                        }
                     }
                 },
             )

@@ -42,7 +42,7 @@
 - 版本：`1.3.0-prerelease`
 - 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.3.0-prerelease>
 - APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.3.0-prerelease/app-prerelease.apk>
-- SHA-256：`46A3DB73494BA423448079CC02168A4B8BB4A67D8E427EE29957EE5FCA69BB53`
+- SHA-256：`C86308CE8000B2F6EF06A2E21151C0E64384B738A6A979E19D5CC8D2AA77E974`
 
 安裝前請確認 Android 裝置允許安裝未知來源的 APK。此版本使用 Debug 金鑰簽署，僅供測試與驗證。
 
@@ -99,7 +99,7 @@ macOS / Linux：
 7. 搜尋列下方的篩選列可切換全部、最愛與各標籤；標籤管理可從設定頁或站台編輯進入。
 8. 在「自訂順序」且未搜尋／未篩選時，長按站台左側拖曳把手可排序。
 9. 站台右側選單可編輯或刪除。
-10. 右上角另有匯入 JSON、匯出 JSON 與設定；設定頁也可進入標籤管理。
+10. 右上角 **⋮** 選單提供匯入 JSON、匯出 JSON 與設定；設定頁也可進入標籤管理。
 
 更完整的使用說明請見 [使用指南](docs/使用指南.md)。
 
@@ -149,11 +149,11 @@ macOS / Linux：
 
 ## 驗證狀態
 
-- `:app:assembleDebug`：通過（`1.3.0`，versionCode 5）
+- `:app:assembleDebug`：通過（`1.3.0`，versionCode 6）
 - `:app:testDebugUnitTest`：30 項測試通過
 - `:app:lintDebug`：通過
 - `:app:assemblePrerelease`：通過（R8、資源縮減、Debug 簽署）
-- `app-prerelease.apk`：1,484,465 bytes，SHA-256 `46A3DB73494BA423448079CC02168A4B8BB4A67D8E427EE29957EE5FCA69BB53`
+- `app-prerelease.apk`：1,484,465 bytes，SHA-256 `C86308CE8000B2F6EF06A2E21151C0E64384B738A6A979E19D5CC8D2AA77E974`
 - 實機／模擬器瀏覽與系統列視覺驗證：目前環境無連接裝置，尚未執行
 
 ## 隱私與安全
