@@ -4,6 +4,42 @@
 
 ---
 
+## 2026-11-03 - v1.4.0（versionCode 7）
+
+### 目標
+- 瀏覽站台時記住離開的網址，30 分鐘內重新開啟同一站台會接續瀏覽。
+- 點擊瀏覽頁標題可回到站台設定的網址。
+
+### 變更
+- `data/AppSettings.kt`：新增 `WEB_URL_RESTORE_WINDOW_MS`（30 分鐘）。
+- `data/SettingsStore.kt`：以站台 ID 為 key 保存 `web_url_*` 與 `web_url_time_*`；新增讀取（含期限檢查）、寫入、單筆清除與全部清除。
+- `ui/MySitesApp.kt`：開啟站台時優先使用 30 分鐘內記住的網址，否則使用站台設定網址；並將目前網址交給 `SettingsStore` 保存。
+- `ui/web/SiteWebScreen.kt`：
+  - WebView 初始網址改由 `initialUrl` 傳入。
+  - 左上返回鍵、系統返回（實際離開站台時）與 App 進入背景（`ON_STOP`）都會保存目前 `http`／`https` 網址。
+  - 標題列站台名稱可點擊，點擊後重新載入站台設定的網址。
+- `ui/home/HomeScreen.kt`：刪除站台、修改站台網址、匯入取代全部資料時，清除對應的記住網址。
+- `res/values/strings.xml`：新增「回到站台設定的網址」無障礙點擊說明。
+- `app/build.gradle.kts`：`versionCode` 6 → 7，`versionName` 1.3.0 → 1.4.0。
+
+### 問題與解法
+- 站台頁有兩種離開方式（工具列返回鍵與系統返回鍵），只在實際離開站台時保存；WebView 歷史內移動不保存。
+- App 被切到背景時不會觸發 Composable 銷毀，改以 `ON_STOP` 監聽補上保存時機。
+- 為避免編輯網址或匯入後沿用不相符的舊頁面，對應操作會清除記住的網址。
+
+### 待辦／已知限制
+- 尚未在實機或模擬器驗證背景保存與 30 分鐘到期行為。
+- 記住的網址只存在本機 SharedPreferences，不會包含在 JSON 匯出中。
+
+### 建置與發行
+- 驗證：`:app:assembleDebug`、`:app:testDebugUnitTest`（30 項）、`:app:lintDebug`、`:app:assemblePrerelease` 均通過。
+- 產出：`app-prerelease.apk`，1,484,885 bytes。
+- 版本：`versionCode 7`、`versionName 1.4.0-prerelease`。
+- SHA-256：`6B1635F4A047DA361B7725370F0D0EAE71B6527BA35475C85A68D7B96F2B7359`。
+- 已發佈 GitHub Release `v1.4.0-prerelease`。
+
+---
+
 ## 2026-11-02 - v1.3.0（versionCode 6）
 
 ### 目標

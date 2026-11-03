@@ -2,6 +2,31 @@
 
 本專案遵循簡化的版本紀錄格式。日期為西元年-月-日。
 
+## [1.4.0] - 2026-11-03（versionCode 7）
+
+### 新增
+
+- 離開站台時自動記住目前網址，30 分鐘內重新開啟同一站台會從該網址繼續瀏覽
+- 切換到背景或關閉螢幕時也會保存目前網址
+- 點擊瀏覽頁的站台名稱可回到站台設定的網址
+
+### 變更
+
+- 刪除站台、修改站台網址或匯入備份時，會清除對應的記住網址
+
+### 建置
+
+- 版本名稱：`1.4.0-prerelease`
+- Version Code：`7`
+- 產出：`app-prerelease.apk`
+- APK 大小：1,484,885 bytes
+- SHA-256：`6B1635F4A047DA361B7725370F0D0EAE71B6527BA35475C85A68D7B96F2B7359`
+
+### 測試
+
+- 30 項 JVM 單元測試通過
+- Android Lint 通過
+
 ## [1.3.0] - 2026-11-02（更新 2，versionCode 6）
 
 ### 變更
@@ -162,6 +187,7 @@
 - 部分網站可能因登入、憑證、X-Frame-Options 或 WebView 相容性而無法正常顯示
 - 允許 `http://` 站台，使用時請注意連線安全
 
+[1.4.0]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.4.0-prerelease
 [1.3.0]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.3.0-prerelease
 [1.2.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.2.0-prerelease
 [1.1.0-prerelease]: https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.1.0-prerelease

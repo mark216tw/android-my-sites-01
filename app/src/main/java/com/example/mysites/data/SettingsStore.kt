@@ -49,6 +49,50 @@ class SettingsStore(context: Context) {
         }
     }
 
+    fun lastWebUrl(siteId: String): String? {
+        val url = prefs.getString(KEY_WEB_URL_PREFIX + siteId, null)
+            ?.takeIf { it.isNotBlank() }
+        val savedAt = prefs.getLong(KEY_WEB_URL_TIME_PREFIX + siteId, 0L)
+        val now = System.currentTimeMillis()
+        val valid = url != null &&
+            savedAt > 0L &&
+            now >= savedAt &&
+            now - savedAt <= WEB_URL_RESTORE_WINDOW_MS
+        if (!valid) {
+            if (url != null || savedAt != 0L) {
+                clearLastWebUrl(siteId)
+            }
+            return null
+        }
+        return url
+    }
+
+    fun setLastWebUrl(siteId: String, url: String) {
+        val trimmed = url.trim()
+        if (trimmed.isEmpty()) return
+        prefs.edit {
+            putString(KEY_WEB_URL_PREFIX + siteId, trimmed)
+            putLong(KEY_WEB_URL_TIME_PREFIX + siteId, System.currentTimeMillis())
+        }
+    }
+
+    fun clearLastWebUrl(siteId: String) {
+        prefs.edit {
+            remove(KEY_WEB_URL_PREFIX + siteId)
+            remove(KEY_WEB_URL_TIME_PREFIX + siteId)
+        }
+    }
+
+    fun clearAllLastWebUrls() {
+        val keys = prefs.all.keys.filter {
+            it.startsWith(KEY_WEB_URL_PREFIX) || it.startsWith(KEY_WEB_URL_TIME_PREFIX)
+        }
+        if (keys.isEmpty()) return
+        prefs.edit {
+            keys.forEach { key -> remove(key) }
+        }
+    }
+
     private fun readSettings(): AppSettings {
         val storedMode = prefs.getString(KEY_THEME_MODE, null)
         val mode = storedMode
@@ -68,5 +112,7 @@ class SettingsStore(context: Context) {
         const val KEY_THEME_HUE = "theme_hue"
         const val KEY_SITE_SORT_MODE = "site_sort_mode"
         const val KEY_LAST_SITE_ID = "last_site_id"
+        const val KEY_WEB_URL_PREFIX = "web_url_"
+        const val KEY_WEB_URL_TIME_PREFIX = "web_url_time_"
     }
 }

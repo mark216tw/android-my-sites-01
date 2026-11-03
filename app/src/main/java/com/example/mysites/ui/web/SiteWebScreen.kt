@@ -21,6 +21,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,11 +51,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +66,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.mysites.R
 import com.example.mysites.data.MAX_WEB_TEXT_ZOOM
 import com.example.mysites.data.MIN_WEB_TEXT_ZOOM
@@ -72,15 +78,40 @@ import com.example.mysites.data.WEB_TEXT_ZOOM_STEP
 @Composable
 fun SiteWebScreen(
     site: Site,
+    initialUrl: String,
     onTextZoomChange: (Int) -> Unit,
+    onSaveLastUrl: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     var webView by remember { mutableStateOf<WebView?>(null) }
     var progress by remember { mutableIntStateOf(0) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    val currentOnSaveLastUrl by rememberUpdatedState(onSaveLastUrl)
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    fun saveCurrentUrl() {
+        val current = webView?.url?.trim().orEmpty()
+        val isWebUrl = current.startsWith("https://", ignoreCase = true) ||
+            current.startsWith("http://", ignoreCase = true)
+        if (isWebUrl) {
+            currentOnSaveLastUrl(current)
+        }
+    }
 
     LaunchedEffect(site.textZoom, webView) {
         webView?.settings?.textZoom = site.textZoom
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                saveCurrentUrl()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     BackHandler {
@@ -88,6 +119,7 @@ fun SiteWebScreen(
         if (view != null && view.canGoBack()) {
             view.goBack()
         } else {
+            saveCurrentUrl()
             onBack()
         }
     }
@@ -112,7 +144,12 @@ fun SiteWebScreen(
                     .padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(
+                    onClick = {
+                        saveCurrentUrl()
+                        onBack()
+                    },
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
@@ -120,7 +157,14 @@ fun SiteWebScreen(
                 }
                 Text(
                     text = site.name,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            onClickLabel = stringResource(R.string.open_site_url),
+                        ) {
+                            errorMessage = null
+                            webView?.loadUrl(site.url)
+                        },
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -174,7 +218,7 @@ fun SiteWebScreen(
                     factory = { ctx ->
                         createWebView(
                             context = ctx,
-                            url = site.url,
+                            url = initialUrl,
                             initialTextZoom = site.textZoom,
                             onProgress = { newProgress ->
                                 progress = newProgress

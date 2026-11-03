@@ -91,8 +91,12 @@ fun MySitesApp(
 
                 SiteWebScreen(
                     site = site,
+                    initialUrl = settingsStore.lastWebUrl(site.id) ?: site.url,
                     onTextZoomChange = { zoom ->
                         store.update(site.copy(textZoom = zoom))
+                    },
+                    onSaveLastUrl = { url ->
+                        settingsStore.setLastWebUrl(site.id, url)
                     },
                     onBack = {
                         settingsStore.setLastSiteId(null)

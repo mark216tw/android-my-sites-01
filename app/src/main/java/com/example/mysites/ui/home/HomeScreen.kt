@@ -468,6 +468,9 @@ fun HomeScreen(
             store = store,
             onDismiss = { editingSite = null },
             onSave = { name, url, tagIds ->
+                if (url != site.url) {
+                    settingsStore.clearLastWebUrl(site.id)
+                }
                 store.update(site.copy(name = name, url = url, tagIds = tagIds))
                 editingSite = null
             },
@@ -483,6 +486,7 @@ fun HomeScreen(
                 TextButton(
                     onClick = {
                         store.delete(site.id)
+                        settingsStore.clearLastWebUrl(site.id)
                         deletingSite = null
                     },
                 ) {
@@ -516,6 +520,7 @@ fun HomeScreen(
                 TextButton(
                     onClick = {
                         store.replaceAll(imported)
+                        settingsStore.clearAllLastWebUrls()
                         pendingImport = null
                         showMessage(
                             context.getString(

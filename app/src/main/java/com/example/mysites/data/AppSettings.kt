@@ -23,6 +23,8 @@ const val MIN_WEB_TEXT_ZOOM = 50
 const val MAX_WEB_TEXT_ZOOM = 200
 const val WEB_TEXT_ZOOM_STEP = 10
 
+const val WEB_URL_RESTORE_WINDOW_MS = 30 * 60 * 1000L
+
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val themeHue: Int = DEFAULT_THEME_HUE,

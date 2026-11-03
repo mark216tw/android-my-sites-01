@@ -4,7 +4,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.3.0--prerelease-orange)](https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.3.0-prerelease)
+[![Release](https://img.shields.io/badge/release-v1.4.0--prerelease-orange)](https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.4.0-prerelease)
 
 「我的站台」是一款以 Kotlin 與 Jetpack Compose 開發的 Android App，讓使用者把自己常用的網站收進清單，並直接在 App 內以 WebView 瀏覽。站台資料完全保存在裝置本機，可透過 JSON 匯出與匯入備份。
 
@@ -26,6 +26,8 @@
 - App 內 WebView 瀏覽，支援載入進度、錯誤重試、外部連結與檔案下載
 - 站台頁可放大／縮小字型（50%～200%），**每個站台各自保存**自己的倍率
 - 站台頁提供重新載入按鈕，可隨時重載目前網頁
+- 離開站台時記住目前網址，30 分鐘內重新開啟會接續瀏覽；切換到背景也會保存
+- 點擊瀏覽頁的站台名稱可回到站台設定的網址
 - 每個站台可加入多個自訂標籤，標籤支援 16 色、拖曳排序與新增／編輯／刪除
 - 站台可標記最愛，首頁可切換全部、最愛與各標籤
 - 首頁搜尋列右側提供排序：自訂順序、名稱、最近使用、加入時間（皆支援雙向）
@@ -39,10 +41,10 @@
 
 ## 下載 Pre-release
 
-- 版本：`1.3.0-prerelease`
-- 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.3.0-prerelease>
-- APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.3.0-prerelease/app-prerelease.apk>
-- SHA-256：`C86308CE8000B2F6EF06A2E21151C0E64384B738A6A979E19D5CC8D2AA77E974`
+- 版本：`1.4.0-prerelease`
+- 發行頁：<https://github.com/mark216tw/android-my-sites-01/releases/tag/v1.4.0-prerelease>
+- APK：<https://github.com/mark216tw/android-my-sites-01/releases/download/v1.4.0-prerelease/app-prerelease.apk>
+- SHA-256：`6B1635F4A047DA361B7725370F0D0EAE71B6527BA35475C85A68D7B96F2B7359`
 
 安裝前請確認 Android 裝置允許安裝未知來源的 APK。此版本使用 Debug 金鑰簽署，僅供測試與驗證。
 
@@ -100,6 +102,7 @@ macOS / Linux：
 8. 在「自訂順序」且未搜尋／未篩選時，長按站台左側拖曳把手可排序。
 9. 站台右側選單可編輯或刪除。
 10. 右上角 **⋮** 選單提供匯入 JSON、匯出 JSON 與設定；設定頁也可進入標籤管理。
+11. 站台頁點擊上方站台名稱可回到該站台設定的網址；離開站台 30 分鐘內再開啟會接續上次網址。
 
 更完整的使用說明請見 [使用指南](docs/使用指南.md)。
 
@@ -133,6 +136,7 @@ macOS / Linux：
 - [系統架構與技術文件](docs/系統架構與技術文件.md)
 - [系統設計文件](docs/系統設計文件.md)
 - [建置與發行指南](docs/建置與發行指南.md)
+- [v1.4.0-prerelease 發行說明](docs/發行說明-v1.4.0-prerelease.md)
 - [v1.3.0-prerelease 發行說明](docs/發行說明-v1.3.0-prerelease.md)
 - [v1.2.0-prerelease 發行說明](docs/發行說明-v1.2.0-prerelease.md)
 - [v1.1.0-prerelease 發行說明](docs/發行說明-v1.1.0-prerelease.md)
@@ -143,17 +147,17 @@ macOS / Linux：
 
 | Build Type | R8 壓縮 | 簽署 | 版本名稱 | 用途 |
 | --- | --- | --- | --- | --- |
-| `debug` | 否 | Debug 金鑰 | `1.3.0` | 本機開發 |
-| `release` | 否 | 未設定正式簽署 | `1.3.0` | 預留正式發行 |
-| `prerelease` | 是（含資源縮減） | Debug 金鑰 | `1.3.0-prerelease` | 測試發行 |
+| `debug` | 否 | Debug 金鑰 | `1.4.0` | 本機開發 |
+| `release` | 否 | 未設定正式簽署 | `1.4.0` | 預留正式發行 |
+| `prerelease` | 是（含資源縮減） | Debug 金鑰 | `1.4.0-prerelease` | 測試發行 |
 
 ## 驗證狀態
 
-- `:app:assembleDebug`：通過（`1.3.0`，versionCode 6）
+- `:app:assembleDebug`：通過（`1.4.0`，versionCode 7）
 - `:app:testDebugUnitTest`：30 項測試通過
 - `:app:lintDebug`：通過
 - `:app:assemblePrerelease`：通過（R8、資源縮減、Debug 簽署）
-- `app-prerelease.apk`：1,484,465 bytes，SHA-256 `C86308CE8000B2F6EF06A2E21151C0E64384B738A6A979E19D5CC8D2AA77E974`
+- `app-prerelease.apk`：1,484,885 bytes，SHA-256 `6B1635F4A047DA361B7725370F0D0EAE71B6527BA35475C85A68D7B96F2B7359`
 - 實機／模擬器瀏覽與系統列視覺驗證：目前環境無連接裝置，尚未執行
 
 ## 隱私與安全
